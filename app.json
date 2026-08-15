@@ -1,0 +1,85 @@
+{
+  "expo": {
+    "name": "Absensi Mobile",
+    "slug": "absensi-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "absensi",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.megakomsel.absensi",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Kamera digunakan untuk foto selfie absensi dan scan wajah.",
+        "NSLocationWhenInUseUsageDescription": "Lokasi digunakan untuk validasi radius absensi.",
+        "NSFaceIDUsageDescription": "Face ID digunakan untuk login cepat."
+      }
+    },
+    "android": {
+      "package": "com.megakomsel.absensi",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0f766e",
+          "image": "./assets/splash.png",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Izinkan $(PRODUCT_NAME) mengakses kamera untuk absensi selfie.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Izinkan $(PRODUCT_NAME) mengakses galeri untuk memilih foto profil.",
+          "cameraPermission": "Izinkan $(PRODUCT_NAME) mengakses kamera untuk foto profil.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Izinkan $(PRODUCT_NAME) mengakses lokasi untuk validasi radius absensi."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Izinkan $(PRODUCT_NAME) menggunakan Face ID untuk login cepat."
+        }
+      ],
+      "expo-asset",
+      "./plugins/withAbiFilters"
+    ],
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "49246f89-6151-41a3-816c-ce6f54bb888c"
+      }
+    },
+    "owner": "mahardika.111"
+  }
+}
