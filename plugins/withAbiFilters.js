@@ -1,25 +1,29 @@
 /**
- * Config plugin — ABI filters biar APK lebih kecil (Android Go friendly).
+ * Config plugin — ABI filter biar APK lebih kecil (Android Go friendly).
  *
- * Expo prebuild (lokal maupun EAS cloud) meng-generate android/ dari app.json.
- * Perubahan manual di android/app/build.gradle TIDAK ikut ke EAS cloud, jadi
- * inject ndk.abiFilters lewat config plugin — jalan otomatis saat prebuild.
+ * React Native mengontrol ABI lewat property `reactNativeArchitectures` di
+ * android/gradle.properties (dibaca ReactAndroid/build.gradle.kts) — BUKAN
+ * lewat ndk.abiFilters di app/build.gradle (itu di-override RNGP).
  *
- * Hasil: APK universal tapi cuma bawa native libs arm64-v8a + armeabi-v7a
- * (x86/x86_64 dibuang) → ukuran turun drastis.
+ * Expo prebuild (lokal maupun EAS cloud) generate ulang android/ dari
+ * app.json, jadi inject lewat config plugin biar jalan otomatis.
+ *
+ * Hasil: native libs cuma arm64-v8a + armeabi-v7a (x86/x86_64 dibuang) →
+ * ukuran APK turun drastis.
  */
-const { withAppBuildGradle } = require('expo/config-plugins');
+const { withGradleProperties } = require('expo/config-plugins');
 
 module.exports = function withAbiFilters(config) {
-  return withAppBuildGradle(config, (config) => {
-    const contents = config.modResults.contents;
-    // Jangan double-inject kalau plugin sudah pernah jalan
-    if (!contents.includes("abiFilters 'arm64-v8a'")) {
-      config.modResults.contents = contents.replace(
-        'defaultConfig {',
-        "defaultConfig {\n        ndk {\n            // Hanya ABI HP asli (buang x86/x86_64) — APK lebih kecil\n            abiFilters 'arm64-v8a', 'armeabi-v7a'\n        }"
-      );
-    }
+  return withGradleProperties(config, (config) => {
+    // Hapus key lama kalau sudah ada (biar idempotent)
+    config.modResults = config.modResults.filter(
+      (p) => p.key !== 'reactNativeArchitectures'
+    );
+    config.modResults.push({
+      type: 'property',
+      key: 'reactNativeArchitectures',
+      value: 'arm64-v8a,armeabi-v7a',
+    });
     return config;
   });
 };
